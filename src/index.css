@@ -22,7 +22,7 @@
 
 @layer components {
   .nav-link {
-    @apply text-[rgb(var(--foreground))] hover:text-[rgb(var(--muted))] transition-colors duration-300 text-sm tracking-wide;
+    @apply text-[rgb(var(--foreground))] hover:text-[#A080FF] transition-colors duration-300 text-sm tracking-wide;
   }
 
   .mobile-menu {

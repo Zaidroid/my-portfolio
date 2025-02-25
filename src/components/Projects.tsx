@@ -47,7 +47,7 @@ export default function Projects() {
           ref={ref}
           className="space-y-20"
         >
-          <h2 className="section-heading text-center mb-16">Work</h2>
+          <h2 className="section-heading text-center mb-16 drop-shadow-md">Recent Projects</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {projects.map((project, index) => (
