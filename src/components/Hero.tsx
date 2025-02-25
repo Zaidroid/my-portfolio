@@ -106,19 +106,7 @@ export default function Hero() {
       </motion.div>
       
       {/* Scroll indicator */}
-      <motion.div 
-        className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
-        animate={{ y: [0, 10, 0] }}
-        transition={{ 
-          duration: 1.5, 
-          repeat: Infinity,
-          repeatType: "loop" 
-        }}
-      >
-        <div className="w-6 h-10 rounded-full border-2 border-[rgb(var(--foreground))]/30 flex justify-center pt-2">
-          <div className="w-1.5 h-1.5 rounded-full bg-[rgb(var(--foreground))]/50" />
-        </div>
-      </motion.div>
+      
     </section>
   );
 }
