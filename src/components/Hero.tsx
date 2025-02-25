@@ -86,7 +86,7 @@ export default function Hero() {
               }}
             />
             <img
-              src="/profile.jpg" // Replace with your actual photo path
+              src="https://i.imgur.com/NE54VcT.jpeg"
               alt="Profile"
               className="relative w-full h-full rounded-full object-cover border-4 border-[rgb(var(--background))] shadow-2xl transition-all duration-500 group-hover:shadow-purple-500/20 dark:group-hover:shadow-blue-500/30"
             />
