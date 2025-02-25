@@ -21,13 +21,13 @@ export default function Contact() {
           <p className="section-subheading mx-auto mb-12">
             I'm always interested in hearing about new projects and opportunities.
           </p>
-          
+
           <div className="flex justify-center space-x-8">
             <a
               href="https://instagram.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#1a1a1a] hover:text-[#555] transition-colors duration-300"
+              className="footer-link"
             >
               <span className="sr-only">Instagram</span>
               <Instagram className="w-6 h-6" />
@@ -36,14 +36,14 @@ export default function Contact() {
               href="https://linkedin.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#1a1a1a] hover:text-[#555] transition-colors duration-300"
+              className="footer-link"
             >
               <span className="sr-only">LinkedIn</span>
               <Linkedin className="w-6 h-6" />
             </a>
             <a
               href="mailto:hello@example.com"
-              className="text-[#1a1a1a] hover:text-[#555] transition-colors duration-300"
+              className="footer-link"
             >
               <span className="sr-only">Email</span>
               <Mail className="w-6 h-6" />
