@@ -1,4 +1,4 @@
-// src/components/Projects.tsx (improved)
+// src/components/Projects.tsx (modified to always show titles and tags)
 import { motion, useAnimation } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { ExternalLink, ArrowUpRight } from 'lucide-react';
@@ -132,6 +132,27 @@ export default function Projects() {
                   />
                 </motion.div>
                 
+                {/* Always visible title and tags overlay */}
+                <div className="absolute inset-0 flex flex-col justify-between p-6">
+                  {/* Top section with title - always visible */}
+                  <div className="bg-black/60 backdrop-blur-sm rounded-lg p-3 self-start">
+                    <h3 className="text-xl font-medium text-white">{project.title}</h3>
+                  </div>
+                  
+                  {/* Bottom section with tags - always visible */}
+                  <div className="flex flex-wrap gap-2 bg-black/60 backdrop-blur-sm p-3 rounded-lg">
+                    {project.tags.map((tag, i) => (
+                      <span 
+                        key={i} 
+                        className="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-sm text-white/90"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                
+                {/* Description and link on hover - keep original hover behavior */}
                 <motion.div 
                   className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                   initial={{ opacity: 0 }}
@@ -163,6 +184,8 @@ export default function Projects() {
                         )}
                       </div>
                       <p className="text-white/90 mb-5">{project.description}</p>
+                      
+                      {/* Tags are duplicated in the hover state to maintain the original design */}
                       <div className="flex flex-wrap gap-2">
                         {project.tags.map((tag, i) => (
                           <motion.span 
