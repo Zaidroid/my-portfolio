@@ -1,7 +1,11 @@
-// 2. Updated Projects.tsx with staggered card animations and hover effects
-import { motion } from 'framer-motion';
+// src/components/Projects.tsx (improved)
+import { motion, useAnimation } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, ArrowUpRight } from 'lucide-react';
+import { useEffect } from 'react';
+
+// Import the reusable animation variants
+import { stagger, fadeInUp } from '../utils/animationVariants';
 
 const projects = [
   {
@@ -34,102 +38,163 @@ const projects = [
 ];
 
 export default function Projects() {
+  const controls = useAnimation();
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1
   });
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2
-      }
+  useEffect(() => {
+    if (inView) {
+      controls.start("visible");
     }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 50 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.6 } }
-  };
+  }, [controls, inView]);
 
   return (
-    <section id="work" className="py-32 px-6 relative">
-      {/* Background effect */}
-      <div className="absolute inset-0 bg-[rgb(var(--foreground))]/5 dark:bg-[rgb(var(--foreground))]/10 skew-y-3 -z-10" />
+    <section id="work" className="py-32 px-6 relative overflow-hidden">
+      {/* Animated background shapes */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div 
+          className="absolute -top-20 -right-20 w-96 h-96 rounded-full bg-purple-500/10 dark:bg-blue-500/10 blur-3xl"
+          animate={{ 
+            x: [0, 50, 0],
+            y: [0, 30, 0],
+            scale: [1, 1.1, 1],
+          }}
+          transition={{ 
+            duration: 15,
+            repeat: Infinity,
+            repeatType: "reverse"
+          }}
+        />
+        <motion.div 
+          className="absolute -bottom-40 -left-20 w-96 h-96 rounded-full bg-blue-500/10 dark:bg-purple-500/10 blur-3xl"
+          animate={{ 
+            x: [0, -30, 0],
+            y: [0, 50, 0],
+            scale: [1, 1.2, 1],
+          }}
+          transition={{ 
+            duration: 18,
+            repeat: Infinity,
+            repeatType: "reverse"
+          }}
+        />
+      </div>
       
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          ref={ref}
-          className="space-y-20"
+          initial="hidden"
+          animate={controls}
+          variants={fadeInUp}
+          custom={0}
+          className="text-center mb-16"
         >
-          <h2 className="section-heading text-center mb-16 drop-shadow-md">
+          <motion.h2 
+            className="section-heading drop-shadow-md inline-block"
+            variants={fadeInUp}
+            custom={1}
+          >
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-600 dark:from-blue-400 dark:to-purple-400">
               Recent Projects
             </span>
-          </h2>
-          
-          <motion.div 
-            className="grid grid-cols-1 md:grid-cols-2 gap-8"
-            variants={containerVariants}
-            initial="hidden"
-            animate={inView ? "show" : "hidden"}
-          >
-            {projects.map((project, index) => (
-              <motion.div
-                key={index}
-                variants={itemVariants}
-                className="project-card group cursor-pointer overflow-hidden rounded-2xl bg-[rgb(var(--foreground))]/5 shadow-md hover:shadow-xl transition-all duration-500"
-                onClick={() => project.url && window.open(project.url, '_blank')}
-                whileHover={{ 
-                  scale: 1.02,
-                  transition: { duration: 0.3 }
-                }}
-              >
-                <motion.div className="relative h-[300px] overflow-hidden">
-                  <motion.img
-                    whileHover={{ scale: 1.1 }}
-                    transition={{ duration: 0.5 }}
+          </motion.h2>
+        </motion.div>
+        
+        <motion.div 
+          className="grid grid-cols-1 md:grid-cols-2 gap-8"
+          initial="hidden"
+          animate={controls}
+          variants={stagger}
+          ref={ref}
+        >
+          {projects.map((project, index) => (
+            <motion.div
+              key={index}
+              className="group relative overflow-hidden rounded-2xl bg-[rgb(var(--foreground))]/5 shadow-md hover:shadow-xl transition-all duration-500 h-[400px]"
+              variants={fadeInUp}
+              custom={index + 2}
+              whileHover={{ 
+                y: -5,
+                transition: { duration: 0.3 }
+              }}
+            >
+              <div className="absolute inset-0 overflow-hidden">
+                <motion.div
+                  className="h-full w-full"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.7 }}
+                >
+                  <img
                     src={project.image}
                     alt={project.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover transition-transform duration-700"
                   />
-                  <div className="project-card-content backdrop-blur-sm">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-2xl font-normal text-white">{project.title}</h3>
-                      {project.url && (
-                        <motion.div
-                          whileHover={{ rotate: 45 }}
-                          transition={{ duration: 0.3 }}
-                        >
-                          <ExternalLink className="w-5 h-5 text-white opacity-60 group-hover:opacity-100 transition-opacity" />
-                        </motion.div>
-                      )}
-                    </div>
-                    <p className="text-white/80 mb-4">{project.description}</p>
-                    <div className="flex flex-wrap gap-2">
-                      {project.tags.map((tag, i) => (
-                        <motion.span 
-                          key={i} 
-                          className="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-sm text-white/90"
-                          whileHover={{ 
-                            backgroundColor: "rgba(255, 255, 255, 0.2)",
-                            scale: 1.05 
-                          }}
-                          transition={{ duration: 0.2 }}
-                        >
-                          {tag}
-                        </motion.span>
-                      ))}
-                    </div>
+                </motion.div>
+                
+                <motion.div 
+                  className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  initial={{ opacity: 0 }}
+                  whileHover={{ opacity: 1 }}
+                >
+                  <div className="absolute inset-0 flex flex-col justify-end p-8">
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      whileHover={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-2xl font-medium text-white">{project.title}</h3>
+                        {project.url && (
+                          <motion.a
+                            href={project.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2 rounded-full bg-white/20 backdrop-blur-sm"
+                            whileHover={{ 
+                              scale: 1.2, 
+                              rotate: 15,
+                              backgroundColor: "rgba(255, 255, 255, 0.3)" 
+                            }}
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <ArrowUpRight className="w-5 h-5 text-white" />
+                          </motion.a>
+                        )}
+                      </div>
+                      <p className="text-white/90 mb-5">{project.description}</p>
+                      <div className="flex flex-wrap gap-2">
+                        {project.tags.map((tag, i) => (
+                          <motion.span 
+                            key={i} 
+                            className="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-sm text-white/90"
+                            whileHover={{ 
+                              backgroundColor: "rgba(255, 255, 255, 0.2)",
+                              scale: 1.05 
+                            }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            {tag}
+                          </motion.span>
+                        ))}
+                      </div>
+                    </motion.div>
                   </div>
                 </motion.div>
-              </motion.div>
-            ))}
-          </motion.div>
+              </div>
+              
+              {/* Highlight border on hover */}
+              <motion.div 
+                className="absolute inset-0 rounded-2xl border-2 border-transparent opacity-0 group-hover:opacity-100"
+                initial={{ opacity: 0 }}
+                whileHover={{ 
+                  opacity: 1,
+                  borderColor: "rgba(124, 58, 237, 0.5)"
+                }}
+                transition={{ duration: 0.3 }}
+              />
+            </motion.div>
+          ))}
         </motion.div>
       </div>
     </section>
