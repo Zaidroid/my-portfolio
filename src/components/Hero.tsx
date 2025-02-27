@@ -61,7 +61,7 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="section-heading text-balance bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-600 dark:from-blue-400 dark:to-purple-400"
           >
-            Hi, I'm Zaid—a maker, developer, and problem-solver, crafting innovative digital and physical experiences.
+            Hi, I'm Zaid. A maker, developer, and problem-solver, crafting innovative digital and physical experiences.
           </motion.h1>
 
           <motion.p
@@ -70,7 +70,7 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 0.6 }}
             className="section-subheading mx-auto"
           >
-            I'm a multidisciplinary creator based in Palestine, specializing in 3D printing, automation, and digital technology. Whether designing custom products, optimizing smart home systems, or building scalable digital solutions, I focus on blending functionality with creativity.
+            I'm a multidisciplinary creator based in Palestine with a passion for 3D printing, digital technology, and problem-solving. From designing custom products to developing practical digital solutions, I enjoy blending creativity with functionality to build things that make a difference.
           </motion.p>
 
           <motion.div
