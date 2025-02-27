@@ -5,6 +5,7 @@ import About from './components/About';
 import Projects from './components/Projects';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
+import AnimatedBackground from './components/AnimatedBackground';
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(true); // Initialize to true
@@ -22,15 +23,20 @@ function App() {
   };
 
   return (
-    <div className={`min-h-screen ${isDarkMode ? 'dark' : ''}`}>
-      <Header isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
-      <main>
-        <Hero />
-        <About />
-        <Projects />
-        <Contact />
-      </main>
-      <Footer />
+    <div className={`min-h-screen ${isDarkMode ? 'dark' : ''} relative`}>
+      {/* Global animated background */}
+      <AnimatedBackground />
+      
+      <div className="relative z-10">
+        <Header isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
+        <main>
+          <Hero />
+          <About />
+          <Projects />
+          <Contact />
+        </main>
+        <Footer />
+      </div>
     </div>
   );
 }
