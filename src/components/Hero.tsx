@@ -13,48 +13,11 @@ export default function Hero() {
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
   const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.8]);
 
-  // Generate animated particles
-  const particles = [...Array(25)].map((_, i) => ({
-    id: i,
-    size: Math.random() * 6 + 4,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    duration: Math.random() * 20 + 10,
-    delay: Math.random() * 5
-  }));
-
   return (
     <section
       ref={containerRef}
-      className="min-h-screen flex items-center justify-center px-6 pt-24 pb-12 relative overflow-hidden"
+      className="min-h-screen flex items-center justify-center px-6 pt-24 pb-12 relative"
     >
-      {/* 3D Animated particles with parallax effect */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {particles.map((particle) => (
-          <motion.div
-            key={particle.id}
-            className="absolute rounded-full bg-gradient-to-r from-purple-500 to-blue-500 dark:from-blue-500 dark:to-purple-500 opacity-20 dark:opacity-30"
-            style={{
-              width: particle.size,
-              height: particle.size,
-              x: `${particle.x}vw`,
-              y: `${particle.y}vh`,
-            }}
-            animate={{
-              x: [`${particle.x}vw`, `${(particle.x + 10) % 100}vw`],
-              y: [`${particle.y}vh`, `${(particle.y + 15) % 100}vh`],
-            }}
-            transition={{
-              duration: particle.duration,
-              repeat: Infinity,
-              repeatType: "reverse",
-              ease: "easeInOut",
-              delay: particle.delay
-            }}
-          />
-        ))}
-      </div>
-
       <motion.div
         style={{ y, opacity, scale }}
         className="max-w-4xl mx-auto text-center relative z-10"
