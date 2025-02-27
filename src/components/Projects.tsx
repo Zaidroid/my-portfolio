@@ -1,58 +1,10 @@
 // src/components/Projects.tsx
-import { motion, useAnimation } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { ExternalLink, ArrowUpRight, Calendar, MapPin, Code } from 'lucide-react';
-import { useEffect } from 'react';
+import { ArrowUpRight, Calendar, MapPin, Code } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
-// Create the animation variants directly in this file to avoid import issues
-const stagger = {
-  animate: {
-    transition: {
-      staggerChildren: 0.1
-    }
-  }
-};
-
-const fadeInUp = {
-  initial: { opacity: 0, y: 60 },
-  animate: { 
-    opacity: 1, 
-    y: 0,
-    transition: {
-      duration: 0.6,
-      ease: [0.6, -0.05, 0.01, 0.99]
-    }
-  }
-};
-
-// Project card animation variants
-const projectCardVariants = {
-  hidden: { opacity: 0, y: 50 },
-  visible: (i) => ({
-    opacity: 1,
-    y: 0,
-    transition: {
-      delay: i * 0.1,
-      duration: 0.5,
-      ease: [0.6, 0.05, -0.01, 0.9]
-    }
-  })
-};
-
-const hoverInfoVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { 
-    opacity: 1, 
-    y: 0,
-    transition: {
-      type: "spring",
-      stiffness: 300,
-      damping: 20
-    }
-  }
-};
-
-// Enhanced project data with more details
+// Enhanced project data
 const projects = [
   {
     title: "PalTraffic",
@@ -96,77 +48,55 @@ const projects = [
 ];
 
 export default function Projects() {
-  const controls = useAnimation();
   const [ref, inView] = useInView({
     triggerOnce: true,
-    threshold: 0.1
+    threshold: 0.1,
   });
-
+  
+  // Use state to track if projects should be visible
+  const [isVisible, setIsVisible] = useState(false);
+  
   useEffect(() => {
+    // Once in view, keep visible
     if (inView) {
-      controls.start("visible");
+      setIsVisible(true);
     }
-  }, [controls, inView]);
+  }, [inView]);
 
   return (
     <section id="work" className="py-32 px-6 relative">
       <div className="max-w-6xl mx-auto relative z-10">
-        <motion.div
-          initial="hidden"
-          animate={controls}
-          variants={{
-            hidden: { opacity: 0 },
-            visible: { opacity: 1 }
-          }}
-          className="text-center mb-16"
-        >
-          <motion.h2 
-            className="section-heading drop-shadow-md inline-block text-4xl font-bold"
-            variants={fadeInUp}
-          >
+        <div className="text-center mb-16">
+          <h2 className="section-heading drop-shadow-md inline-block text-4xl font-bold">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-600 dark:from-blue-400 dark:to-purple-400">
               Recent Projects
             </span>
-          </motion.h2>
-        </motion.div>
+          </h2>
+        </div>
         
-        <motion.div 
+        <div 
           className="grid grid-cols-1 md:grid-cols-2 gap-10"
-          initial="hidden"
-          animate={controls}
-          variants={{
-            hidden: {},
-            visible: {
-              transition: {
-                staggerChildren: 0.2
-              }
-            }
-          }}
           ref={ref}
         >
           {projects.map((project, index) => (
             <motion.div
               key={index}
-              className="group relative overflow-hidden rounded-2xl bg-black/5 dark:bg-white/5 shadow-md hover:shadow-xl transition-all duration-700 h-[420px]"
-              variants={projectCardVariants}
-              custom={index}
-              whileHover={{ 
-                y: -8,
-                transition: { duration: 0.3 }
+              initial={{ opacity: 0, y: 50 }}
+              animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+              transition={{ 
+                duration: 0.5,
+                delay: index * 0.1
               }}
+              className="group relative overflow-hidden rounded-2xl bg-black/5 dark:bg-white/5 shadow-md hover:shadow-xl transition-all duration-500 h-[420px]"
             >
               <div className="absolute inset-0 overflow-hidden">
-                <motion.div
-                  className="h-full w-full"
-                  whileHover={{ scale: 1.08 }}
-                  transition={{ duration: 0.7 }}
-                >
+                <div className="h-full w-full transition-transform duration-700 group-hover:scale-105">
                   <img
                     src={project.image}
                     alt={project.title}
-                    className="w-full h-full object-cover transition-transform duration-700"
+                    className="w-full h-full object-cover"
                   />
-                </motion.div>
+                </div>
                 
                 {/* Always visible title and tags overlay */}
                 <div className="absolute inset-0 flex flex-col justify-between p-6">
@@ -180,7 +110,7 @@ export default function Projects() {
                     {project.tags.map((tag, i) => (
                       <span 
                         key={i} 
-                        className="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-sm text-white/90 transition-all duration-300"
+                        className="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-sm text-white/90"
                       >
                         {tag}
                       </span>
@@ -189,15 +119,9 @@ export default function Projects() {
                 </div>
                 
                 {/* Hover overlay with more info */}
-                <div 
-                  className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                >
+                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                   <div className="absolute inset-0 flex flex-col justify-end p-8">
-                    <motion.div
-                      variants={hoverInfoVariants}
-                      initial="hidden"
-                      whileHover="visible"
-                    >
+                    <div className="transform translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
                       <div className="flex items-center justify-between mb-3">
                         <h3 className="text-2xl font-bold text-white">{project.title}</h3>
                         <div className="flex space-x-2">
@@ -242,7 +166,7 @@ export default function Projects() {
                         )}
                       </div>
                       
-                      <p className="text-white/90 mb-5 line-clamp-3 hover:line-clamp-none transition-all duration-300">
+                      <p className="text-white/90 mb-5">
                         {project.description}
                       </p>
                       
@@ -256,18 +180,16 @@ export default function Projects() {
                           </span>
                         ))}
                       </div>
-                    </motion.div>
+                    </div>
                   </div>
                 </div>
               </div>
               
               {/* Highlight border on hover */}
-              <div 
-                className="absolute inset-0 rounded-2xl border-2 border-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 border-gradient-to-r from-purple-600 to-blue-600"
-              />
+              <div className="absolute inset-0 rounded-2xl border-2 border-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 border-purple-500/50"></div>
             </motion.div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );
