@@ -22,6 +22,16 @@
   body {
     @apply bg-[rgb(var(--background))] text-[rgb(var(--foreground))] antialiased transition-colors duration-300;
   }
+  
+  /* Smooth scroll behavior for the whole site */
+  html {
+    @apply scroll-smooth;
+  }
+  
+  /* Ensure sections have a consistent appearance */
+  section {
+    @apply overflow-hidden;
+  }
 }
 
 @layer components {
