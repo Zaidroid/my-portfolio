@@ -4,8 +4,53 @@ import { useInView } from 'react-intersection-observer';
 import { ExternalLink, ArrowUpRight, Calendar, MapPin, Code } from 'lucide-react';
 import { useEffect } from 'react';
 
-// Import only the existing animation variants
-import { stagger, fadeInUp } from '../utils/animationVariants';
+// Create the animation variants directly in this file to avoid import issues
+const stagger = {
+  animate: {
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
+const fadeInUp = {
+  initial: { opacity: 0, y: 60 },
+  animate: { 
+    opacity: 1, 
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: [0.6, -0.05, 0.01, 0.99]
+    }
+  }
+};
+
+// Project card animation variants
+const projectCardVariants = {
+  hidden: { opacity: 0, y: 50 },
+  visible: (i) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.1,
+      duration: 0.5,
+      ease: [0.6, 0.05, -0.01, 0.9]
+    }
+  })
+};
+
+const hoverInfoVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: {
+      type: "spring",
+      stiffness: 300,
+      damping: 20
+    }
+  }
+};
 
 // Enhanced project data with more details
 const projects = [
@@ -50,33 +95,6 @@ const projects = [
   }
 ];
 
-// New animation variants defined locally to avoid import issues
-const projectCardVariants = {
-  hidden: { opacity: 0, y: 50 },
-  visible: (i) => ({
-    opacity: 1,
-    y: 0,
-    transition: {
-      delay: i * 0.1,
-      duration: 0.5,
-      ease: [0.6, 0.05, -0.01, 0.9]
-    }
-  })
-};
-
-const hoverInfoVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { 
-    opacity: 1, 
-    y: 0,
-    transition: {
-      type: "spring",
-      stiffness: 300,
-      damping: 20
-    }
-  }
-};
-
 export default function Projects() {
   const controls = useAnimation();
   const [ref, inView] = useInView({
@@ -96,14 +114,15 @@ export default function Projects() {
         <motion.div
           initial="hidden"
           animate={controls}
-          variants={fadeInUp} // Using existing fadeInUp instead of fadeInRight
-          custom={0}
+          variants={{
+            hidden: { opacity: 0 },
+            visible: { opacity: 1 }
+          }}
           className="text-center mb-16"
         >
           <motion.h2 
             className="section-heading drop-shadow-md inline-block text-4xl font-bold"
             variants={fadeInUp}
-            custom={1}
           >
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-600 dark:from-blue-400 dark:to-purple-400">
               Recent Projects
@@ -112,14 +131,14 @@ export default function Projects() {
         </motion.div>
         
         <motion.div 
-          className="grid grid-cols-1 md:grid-cols-2 gap-10" // Increased gap for better spacing
+          className="grid grid-cols-1 md:grid-cols-2 gap-10"
           initial="hidden"
           animate={controls}
           variants={{
             hidden: {},
             visible: {
               transition: {
-                staggerChildren: 0.2 // More pronounced stagger
+                staggerChildren: 0.2
               }
             }
           }}
@@ -128,18 +147,18 @@ export default function Projects() {
           {projects.map((project, index) => (
             <motion.div
               key={index}
-              className="group relative overflow-hidden rounded-2xl bg-[rgb(var(--foreground))]/5 shadow-md hover:shadow-xl transition-all duration-700 h-[420px]" // Slightly taller to accommodate more info
+              className="group relative overflow-hidden rounded-2xl bg-black/5 dark:bg-white/5 shadow-md hover:shadow-xl transition-all duration-700 h-[420px]"
               variants={projectCardVariants}
               custom={index}
               whileHover={{ 
-                y: -8, // More pronounced lift
+                y: -8,
                 transition: { duration: 0.3 }
               }}
             >
               <div className="absolute inset-0 overflow-hidden">
                 <motion.div
                   className="h-full w-full"
-                  whileHover={{ scale: 1.08 }} // More pronounced zoom
+                  whileHover={{ scale: 1.08 }}
                   transition={{ duration: 0.7 }}
                 >
                   <img
@@ -149,7 +168,7 @@ export default function Projects() {
                   />
                 </motion.div>
                 
-                {/* Always visible title and tags overlay with improved styling */}
+                {/* Always visible title and tags overlay */}
                 <div className="absolute inset-0 flex flex-col justify-between p-6">
                   {/* Top section with title - always visible */}
                   <div className="bg-black/70 backdrop-blur-sm rounded-lg p-4 self-start">
@@ -169,11 +188,9 @@ export default function Projects() {
                   </div>
                 </div>
                 
-                {/* Enhanced hover overlay with more info */}
-                <motion.div 
+                {/* Hover overlay with more info */}
+                <div 
                   className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                  initial={{ opacity: 0 }}
-                  whileHover={{ opacity: 1 }}
                 >
                   <div className="absolute inset-0 flex flex-col justify-end p-8">
                     <motion.div
@@ -185,34 +202,26 @@ export default function Projects() {
                         <h3 className="text-2xl font-bold text-white">{project.title}</h3>
                         <div className="flex space-x-2">
                           {project.githubUrl && (
-                            <motion.a
+                            <a
                               href={project.githubUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="p-2 rounded-full bg-white/20 backdrop-blur-sm"
-                              whileHover={{ 
-                                scale: 1.2, 
-                                backgroundColor: "rgba(255, 255, 255, 0.3)" 
-                              }}
+                              className="p-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors"
                               onClick={(e) => e.stopPropagation()}
                             >
                               <Code className="w-5 h-5 text-white" />
-                            </motion.a>
+                            </a>
                           )}
                           {project.url && (
-                            <motion.a
+                            <a
                               href={project.url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="p-2 rounded-full bg-white/20 backdrop-blur-sm"
-                              whileHover={{ 
-                                scale: 1.2, 
-                                backgroundColor: "rgba(255, 255, 255, 0.3)" 
-                              }}
+                              className="p-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors"
                               onClick={(e) => e.stopPropagation()}
                             >
                               <ArrowUpRight className="w-5 h-5 text-white" />
-                            </motion.a>
+                            </a>
                           )}
                         </div>
                       </div>
@@ -233,42 +242,28 @@ export default function Projects() {
                         )}
                       </div>
                       
-                      {/* Enhanced description */}
                       <p className="text-white/90 mb-5 line-clamp-3 hover:line-clamp-none transition-all duration-300">
                         {project.description}
                       </p>
                       
-                      {/* Tags with enhanced hover effects */}
                       <div className="flex flex-wrap gap-2">
                         {project.tags.map((tag, i) => (
-                          <motion.span 
+                          <span 
                             key={i} 
-                            className="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-sm text-white/90"
-                            whileHover={{ 
-                              backgroundColor: "rgba(124, 58, 237, 0.3)",
-                              scale: 1.05,
-                              y: -2
-                            }}
-                            transition={{ duration: 0.2 }}
+                            className="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-sm text-white/90 hover:bg-purple-500/30 transition-colors"
                           >
                             {tag}
-                          </motion.span>
+                          </span>
                         ))}
                       </div>
                     </motion.div>
                   </div>
-                </motion.div>
+                </div>
               </div>
               
-              {/* Enhanced highlight border on hover with gradient */}
-              <motion.div 
-                className="absolute inset-0 rounded-2xl border-2 border-transparent opacity-0 group-hover:opacity-100"
-                initial={{ opacity: 0 }}
-                whileHover={{ 
-                  opacity: 1,
-                  borderImage: "linear-gradient(45deg, rgba(124, 58, 237, 0.7), rgba(59, 130, 246, 0.7)) 1"
-                }}
-                transition={{ duration: 0.3 }}
+              {/* Highlight border on hover */}
+              <div 
+                className="absolute inset-0 rounded-2xl border-2 border-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 border-gradient-to-r from-purple-600 to-blue-600"
               />
             </motion.div>
           ))}
