@@ -28,10 +28,10 @@ export default function About() {
           </motion.h2>
           
           <p className="text-lg text-[#555] dark:text-[#AAA] leading-relaxed">
-            With years of hands-on experience in 3D printing, cybersecurity, and DevOps, I've worked on everything from prosthetic design to home automation and AI-powered workflows. My approach is deeply practical—leveraging technology to solve real-world problems while ensuring accessibility and efficiency.
+            With a background in 3D printing, cybersecurity, and DevOps, I've worked on projects ranging from prosthetic design to AI-powered workflows. I focus on leveraging technology to create practical, scalable solutions that improve efficiency and accessibility. Whether it's optimizing digital infrastructure, enhancing security, or developing custom hardware, I enjoy tackling challenges that bridge the gap between innovation and real-world application.
           </p>
           <p className="text-lg text-[#555] dark:text-[#AAA] leading-relaxed">
-            Beyond my work, I'm always exploring new software, experimenting with emerging tech, and sharing knowledge to help others innovate.
+            Beyond my work, I'm always experimenting with new software, exploring emerging tech, and sharing knowledge to help others push the boundaries of what's possible.
           </p>
         </motion.div>
       </div>
