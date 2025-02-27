@@ -1,4 +1,4 @@
-// src/components/Projects.tsx (modified to always show titles and tags)
+// src/components/Projects.tsx
 import { motion, useAnimation } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { ExternalLink, ArrowUpRight } from 'lucide-react';
@@ -51,37 +51,7 @@ export default function Projects() {
   }, [controls, inView]);
 
   return (
-    <section id="work" className="py-32 px-6 relative overflow-hidden">
-      {/* Animated background shapes */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div 
-          className="absolute -top-20 -right-20 w-96 h-96 rounded-full bg-purple-500/10 dark:bg-blue-500/10 blur-3xl"
-          animate={{ 
-            x: [0, 50, 0],
-            y: [0, 30, 0],
-            scale: [1, 1.1, 1],
-          }}
-          transition={{ 
-            duration: 15,
-            repeat: Infinity,
-            repeatType: "reverse"
-          }}
-        />
-        <motion.div 
-          className="absolute -bottom-40 -left-20 w-96 h-96 rounded-full bg-blue-500/10 dark:bg-purple-500/10 blur-3xl"
-          animate={{ 
-            x: [0, -30, 0],
-            y: [0, 50, 0],
-            scale: [1, 1.2, 1],
-          }}
-          transition={{ 
-            duration: 18,
-            repeat: Infinity,
-            repeatType: "reverse"
-          }}
-        />
-      </div>
-      
+    <section id="work" className="py-32 px-6 relative">
       <div className="max-w-6xl mx-auto relative z-10">
         <motion.div
           initial="hidden"
