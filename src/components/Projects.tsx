@@ -115,52 +115,53 @@ export default function Projects() {
                   />
                 </div>
                 
-                {/* Always visible title and tags overlay */}
-                <div className={`absolute inset-0 flex flex-col justify-between p-6 ${expandedProject === index ? 'pointer-events-none' : ''}`}>
-                  {/* Top section with title and expand button - always visible */}
-                  <div className="bg-black/70 backdrop-blur-sm rounded-lg p-4 self-start flex items-center justify-between w-full">
-                    <h3 className="text-xl font-medium text-white">{project.title}</h3>
-                    <button
-                      onClick={(e) => toggleExpand(index, e)}
-                      className="p-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors ml-2"
-                    >
-                      {expandedProject === index ? (
-                        <Minimize2 className="w-5 h-5 text-white" />
-                      ) : (
-                        <Maximize2 className="w-5 h-5 text-white" />
-                      )}
-                    </button>
-                  </div>
-                  
-                  {/* Bottom section with tags - always visible when not expanded */}
-                  {expandedProject !== index && (
-                    <div className="flex flex-wrap gap-2 bg-black/70 backdrop-blur-sm p-4 rounded-lg">
-                      {project.tags.map((tag, i) => (
-                        <span 
-                          key={i} 
-                          className="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-sm text-white/90"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
+                {/* Simple title overlay - Always visible, no box or icon */}
+                <div className={`absolute top-0 left-0 p-6 ${expandedProject === index ? 'pointer-events-none' : ''}`}>
+                  <h3 className="text-xl font-medium text-white drop-shadow-lg">{project.title}</h3>
                 </div>
+                
+                {/* Expand button - always visible */}
+                <div className="absolute top-4 right-4">
+                  <button
+                    onClick={(e) => toggleExpand(index, e)}
+                    className="p-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors"
+                  >
+                    {expandedProject === index ? (
+                      <Minimize2 className="w-5 h-5 text-white" />
+                    ) : (
+                      <Maximize2 className="w-5 h-5 text-white" />
+                    )}
+                  </button>
+                </div>
+                
+                {/* Bottom section with tags - always visible when not expanded */}
+                {expandedProject !== index && (
+                  <div className="absolute bottom-0 left-0 right-0 flex flex-wrap gap-2 bg-black/70 backdrop-blur-sm p-4 rounded-t-lg">
+                    {project.tags.map((tag, i) => (
+                      <span 
+                        key={i} 
+                        className="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-sm text-white/90"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
                 
                 {/* Hover overlay with more info - visible on hover when not expanded */}
                 {expandedProject !== index && (
                   <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                     <div className="absolute inset-0 flex flex-col justify-end p-8">
                       <div className="transform translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                        <div className="flex items-center justify-between mb-3">
-                          <h3 className="text-2xl font-bold text-white">{project.title}</h3>
+                        <div className="flex justify-end mb-3">
+                          {/* Only show action icons here, no title duplication */}
                           <div className="flex space-x-2">
                             {project.githubUrl && (
                               <a
                                 href={project.githubUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="p-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors"
+                                className="p-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors z-20"
                                 onClick={(e) => e.stopPropagation()}
                               >
                                 <Code className="w-5 h-5 text-white" />
@@ -171,7 +172,7 @@ export default function Projects() {
                                 href={project.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="p-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors"
+                                className="p-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors z-20"
                                 onClick={(e) => e.stopPropagation()}
                               >
                                 <ArrowUpRight className="w-5 h-5 text-white" />
@@ -199,17 +200,6 @@ export default function Projects() {
                         <p className="text-white/90 mb-5">
                           {project.description}
                         </p>
-                        
-                        <div className="flex flex-wrap gap-2">
-                          {project.tags.map((tag, i) => (
-                            <span 
-                              key={i} 
-                              className="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-sm text-white/90 hover:bg-purple-500/30 transition-colors"
-                            >
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
                       </div>
                     </div>
                   </div>
