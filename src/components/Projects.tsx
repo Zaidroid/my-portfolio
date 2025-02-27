@@ -4,8 +4,8 @@ import { useInView } from 'react-intersection-observer';
 import { ExternalLink, ArrowUpRight, Calendar, MapPin, Code } from 'lucide-react';
 import { useEffect } from 'react';
 
-// Import the reusable animation variants
-import { stagger, fadeInUp, fadeInRight } from '../utils/animationVariants';
+// Import only the existing animation variants
+import { stagger, fadeInUp } from '../utils/animationVariants';
 
 // Enhanced project data with more details
 const projects = [
@@ -50,7 +50,7 @@ const projects = [
   }
 ];
 
-// New animation variants
+// New animation variants defined locally to avoid import issues
 const projectCardVariants = {
   hidden: { opacity: 0, y: 50 },
   visible: (i) => ({
@@ -96,7 +96,7 @@ export default function Projects() {
         <motion.div
           initial="hidden"
           animate={controls}
-          variants={fadeInRight} // Changed from fadeInUp for variety
+          variants={fadeInUp} // Using existing fadeInUp instead of fadeInRight
           custom={0}
           className="text-center mb-16"
         >
