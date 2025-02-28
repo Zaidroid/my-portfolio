@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from 'react';
+// src/components/Projects.tsx
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { ArrowUpRight, Calendar, MapPin, Code, Maximize2, Minimize2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
-// Enhanced project data with updated images
+// Enhanced project data
 const projects = [
   {
     title: "PalTraffic",
     description: "Real-time traffic monitoring and navigation system for Palestine regions with live updates and route optimization.",
     detailedDescription: "PalTraffic provides comprehensive real-time traffic data across Palestine, including route optimization, incident reporting, and alternative path suggestions. The system integrates with various data sources to offer the most accurate traffic conditions, helping users navigate efficiently while avoiding congestion and roadblocks. Users can contribute to traffic updates through a community-driven reporting system, making it a collaborative tool for better mobility.",
-    image: "https://unsplash.com/photos/aerial-photography-of-vehicles-yBhOcUr4TVY",
+    image: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=800&h=600&fit=crop",
     url: "https://roads.zaidlab.xyz",
     tags: ["React", "Node.js", "Maps API"],
     date: "2024",
@@ -20,7 +21,7 @@ const projects = [
     title: "TimeTravel",
     description: "Interactive historical timeline exploration platform showcasing Palestinian history with immersive storytelling and archival content.",
     detailedDescription: "TimeTravel is an immersive digital platform that chronicles Palestinian history through interactive timelines, archival footage, and personal narratives. The project incorporates WebGL-powered visualizations to create an engaging storytelling experience, allowing users to navigate through different historical periods and explore cultural, political, and social developments. Each timeline entry links to comprehensive resources including historical documents, photographs, and oral histories.",
-    image: "https://unsplash.com/photos/time-lapse-photography-of-road-ZGnC2gOvzKw",
+    image: "https://images.unsplash.com/photo-1501446529957-6226bd447c46?w=800&h=600&fit=crop",
     url: "https://timetravel.zaidlab.xyz",
     tags: ["Vue.js", "WebGL", "Animation"],
     date: "2023",
@@ -31,7 +32,7 @@ const projects = [
     title: "Health Tracker",
     description: "Personal health and wellness monitoring dashboard tailored for regional health metrics and community wellness initiatives.",
     detailedDescription: "Health Tracker combines personal health monitoring with community wellness initiatives specifically designed for regional health needs. Users can track their vital statistics, medication schedules, and fitness goals while contributing anonymized data to community health metrics. The dashboard provides visualizations of both personal progress and community health trends, helping to identify local health patterns and needs. The system also integrates with regional healthcare providers for streamlined communication and appointment scheduling.",
-    image: "https://unsplash.com/photos/dumbbells-on-floor-VJ2s0c20qCo",
+    image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=600&fit=crop",
     url: "https://health.zaidlab.xyz",
     tags: ["React", "D3.js", "API"],
     date: "2023",
@@ -42,7 +43,7 @@ const projects = [
     title: "Palestine Historical Data",
     description: "Interactive infographic showcasing historical data in numbers with comprehensive timelines, demographic changes, and cultural heritage mapping.",
     detailedDescription: "Palestine Historical Data is a comprehensive digital repository presenting historical information through interactive infographics, data visualizations, and geographical mapping. The project documents demographic changes, cultural heritage sites, and historical events using a combination of archival records, statistical data, and geographical information. Users can explore population trends, cultural landmarks, and territorial changes across different time periods through animated visualizations that make complex historical data accessible and engaging.",
-    image: "https://unsplash.com/photos/aerial-view-of-city-buildings-during-daytime-030ZIU1Rook",
+    image: "https://images.unsplash.com/photo-1527004013197-933c4bb611b3?w=800&h=600&fit=crop",
     tags: ["Data Visualization", "SVG", "Animation"],
     date: "2022",
     location: "Historical Archives",
@@ -108,7 +109,7 @@ export default function Projects() {
               <div className="absolute inset-0 overflow-hidden">
                 <div className={`h-full w-full transition-transform duration-700 ${expandedProject === index ? 'opacity-60' : 'group-hover:scale-105'}`}>
                   <img
-                    src={`/api/placeholder/800/600?text=${project.title}`}
+                    src={project.image}
                     alt={project.title}
                     className="w-full h-full object-cover"
                   />
@@ -271,7 +272,7 @@ export default function Projects() {
                     
                     <div className="md:w-1/2 rounded-xl overflow-hidden">
                       <img 
-                        src={`/api/placeholder/800/600?text=${project.title}`}
+                        src={project.image}
                         alt={project.title}
                         className="w-full h-full object-cover"
                       />
