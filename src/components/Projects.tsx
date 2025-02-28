@@ -21,7 +21,7 @@ const projects = [
     title: "TimeTravel",
     description: "Interactive historical timeline exploration platform showcasing Palestinian history with immersive storytelling and archival content.",
     detailedDescription: "TimeTravel is an immersive digital platform that chronicles Palestinian history through interactive timelines, archival footage, and personal narratives. The project incorporates WebGL-powered visualizations to create an engaging storytelling experience, allowing users to navigate through different historical periods and explore cultural, political, and social developments. Each timeline entry links to comprehensive resources including historical documents, photographs, and oral histories.",
-    image: "https://images.unsplash.com/photo-1501446529957-6226bd447c46?w=800&h=600&fit=crop",
+    image: "https://images.unsplash.com/photo-1614517453351-6c1522fc7a56?q=80&w=2670&auto=format&fit",
     url: "https://timetravel.zaidlab.xyz",
     tags: ["Vue.js", "WebGL", "Animation"],
     date: "2023",
