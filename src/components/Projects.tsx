@@ -52,6 +52,23 @@ const projects = [
   }
 ];
 
+// Custom animation variants to replace any problematic cubic-bezier curves
+const safeScaleUp = {
+  hidden: { 
+    opacity: 0,
+    scale: 0.8
+  },
+  visible: (custom = 0) => ({
+    opacity: 1,
+    scale: 1,
+    transition: {
+      delay: custom * 0.1,
+      duration: 0.5,
+      ease: "easeOut" // Using a named easing instead of cubic-bezier
+    }
+  })
+};
+
 export default function Projects() {
   const [ref, inView] = useInView({
     triggerOnce: true,
@@ -110,25 +127,22 @@ export default function Projects() {
               animate={isVisible ? "visible" : "hidden"}
               variants={fadeInUp}
               custom={index}
-              className={`group relative overflow-hidden rounded-2xl bg-black/5 dark:bg-white/5 shadow-md hover:shadow-xl transition-all duration-500 ${expandedProject === index ? 'md:col-span-2' : 'h-[420px]'}`}
+              className={`group relative overflow-hidden rounded-2xl bg-black/5 dark:bg-white/5 shadow-md hover:shadow-xl transition-all duration-300 ${expandedProject === index ? 'md:col-span-2' : 'h-[420px]'}`}
               onClick={(e) => handleProjectClick(index, e)}
-              layoutId={`project-${index}`}
-              layout="position"
+              // Don't use layout animations which might conflict with Web Animations API
               transition={{
-                layout: { duration: 0.5, type: "spring", damping: 30, stiffness: 200 }
+                duration: 0.3,
+                ease: "easeOut"
               }}
             >
               <div className="absolute inset-0 overflow-hidden">
-                <motion.div 
-                  className={`h-full w-full transition-opacity duration-500 ${expandedProject === index ? 'opacity-60' : ''}`}
-                  layout
-                >
+                <div className={`h-full w-full transition-opacity duration-300 ${expandedProject === index ? 'opacity-60' : ''}`}>
                   <img
                     src={project.image}
                     alt={project.title}
                     className="w-full h-full object-cover"
                   />
-                </motion.div>
+                </div>
                 
                 {/* Simple title overlay - Always visible, no box or icon */}
                 {expandedProject !== index && (
@@ -156,7 +170,7 @@ export default function Projects() {
                 
                 {/* Hover overlay with more info - visible on hover when not expanded */}
                 {expandedProject !== index && (
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <div className="absolute inset-0 flex flex-col justify-end p-8">
                       <div className="transform translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
                         <div className="flex justify-end mb-3">
@@ -218,8 +232,7 @@ export default function Projects() {
                   className="relative z-10 p-8 bg-gradient-to-b from-black/80 to-black/95 min-h-[420px]"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ duration: 0.3, delay: 0.1 }}
-                  layoutId={`project-content-${index}`}
+                  transition={{ duration: 0.3 }}
                 >
                   <div className="flex flex-col md:flex-row gap-8">
                     <div className="md:w-1/2">
@@ -317,7 +330,7 @@ export default function Projects() {
                     
                     <motion.div 
                       className="md:w-1/2 rounded-xl overflow-hidden h-56 sm:h-64 md:h-full"
-                      variants={scaleUp}
+                      variants={safeScaleUp}
                       initial="hidden"
                       animate="visible"
                       custom={2}
