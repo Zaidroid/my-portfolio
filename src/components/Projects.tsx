@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { ArrowUpRight, Calendar, MapPin, Code, Minimize2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { fadeInUp, scaleUp } from '../utils/animationVariants';
+import { fadeInUp, scaleUp } from '../components/animationVariants';
 
 // Enhanced project data
 const projects = [
