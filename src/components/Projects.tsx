@@ -1,8 +1,9 @@
 // src/components/Projects.tsx
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { ArrowUpRight, Calendar, MapPin, Code, Maximize2, Minimize2 } from 'lucide-react';
+import { ArrowUpRight, Calendar, MapPin, Code, Minimize2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { fadeInUp, scaleUp } from '../utils/animationVariants';
 
 // Enhanced project data
 const projects = [
@@ -88,28 +89,38 @@ export default function Projects() {
           {projects.map((project, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, y: 50 }}
-              animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-              transition={{ 
-                duration: 0.5,
-                delay: index * 0.1
-              }}
-              className={`group relative overflow-hidden rounded-2xl bg-black/5 dark:bg-white/5 shadow-md hover:shadow-xl transition-all duration-500 cursor-pointer ${expandedProject === index ? 'md:col-span-2 h-auto' : 'h-[420px]'}`}
+              initial="hidden"
+              animate={isVisible ? "visible" : "hidden"}
+              variants={fadeInUp}
+              custom={index}
+              className={`group relative overflow-hidden rounded-2xl bg-black/5 dark:bg-white/5 shadow-md hover:shadow-xl transition-all duration-500 cursor-pointer ${expandedProject === index ? 'md:col-span-2' : 'h-[420px]'}`}
               onClick={() => expandedProject === index ? setExpandedProject(null) : setExpandedProject(index)}
+              layout
+              transition={{
+                layout: { duration: 0.6, type: "spring", bounce: 0.2 }
+              }}
             >
               <div className="absolute inset-0 overflow-hidden">
-                <div className={`h-full w-full transition-transform duration-700 ${expandedProject === index ? 'opacity-60' : 'group-hover:scale-105'}`}>
+                <motion.div 
+                  className={`h-full w-full transition-opacity duration-500 ${expandedProject === index ? 'opacity-60' : ''}`}
+                  layout
+                >
                   <img
                     src={project.image}
                     alt={project.title}
                     className="w-full h-full object-cover"
                   />
-                </div>
+                </motion.div>
                 
                 {/* Simple title overlay - Always visible, no box or icon */}
-                <div className={`absolute top-0 left-0 p-6 ${expandedProject === index ? 'pointer-events-none' : ''}`}>
-                  <h3 className="text-xl font-medium text-white drop-shadow-lg">{project.title}</h3>
-                </div>
+                {expandedProject !== index && (
+                  <motion.div 
+                    className="absolute top-0 left-0 p-6"
+                    variants={fadeInUp}
+                  >
+                    <h3 className="text-xl font-medium text-white drop-shadow-lg">{project.title}</h3>
+                  </motion.div>
+                )}
                 
                 {/* Bottom section with tags - always visible when not expanded */}
                 {expandedProject !== index && (
@@ -185,53 +196,89 @@ export default function Projects() {
               
               {/* Expanded view */}
               {expandedProject === index && (
-                <div className="relative z-10 p-8 bg-gradient-to-b from-black/80 to-black/95 min-h-[420px]">
+                <motion.div 
+                  className="relative z-10 p-8 bg-gradient-to-b from-black/80 to-black/95 min-h-[420px]"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3, delay: 0.2 }}
+                >
                   <div className="flex flex-col md:flex-row gap-8">
                     <div className="md:w-1/2">
-                      <h2 className="text-3xl font-bold text-white mb-4">{project.title}</h2>
+                      <motion.h2 
+                        className="text-3xl font-bold text-white mb-4"
+                        variants={fadeInUp}
+                        initial="hidden"
+                        animate="visible"
+                      >
+                        {project.title}
+                      </motion.h2>
                       
-                      <div className="flex items-center text-white/80 space-x-4 mb-6">
+                      <motion.div 
+                        className="flex flex-wrap items-center text-white/80 space-x-2 space-y-2 mb-6 sm:space-y-0"
+                        variants={fadeInUp}
+                        initial="hidden"
+                        animate="visible"
+                        custom={1}
+                      >
                         {project.date && (
                           <div className="flex items-center space-x-1">
-                            <Calendar className="w-5 h-5" />
-                            <span>{project.date}</span>
+                            <Calendar className="w-4 h-4 sm:w-5 sm:h-5" />
+                            <span className="text-sm sm:text-base">{project.date}</span>
                           </div>
                         )}
                         {project.location && (
-                          <div className="flex items-center space-x-1">
-                            <MapPin className="w-5 h-5" />
-                            <span>{project.location}</span>
+                          <div className="flex items-center space-x-1 ml-2 first:ml-0">
+                            <MapPin className="w-4 h-4 sm:w-5 sm:h-5" />
+                            <span className="text-sm sm:text-base">{project.location}</span>
                           </div>
                         )}
-                      </div>
+                      </motion.div>
                       
-                      <div className="text-white/90 mb-6 space-y-4">
+                      <motion.div 
+                        className="text-white/90 mb-6 space-y-4"
+                        variants={fadeInUp}
+                        initial="hidden"
+                        animate="visible"
+                        custom={2}
+                      >
                         <p>{project.description}</p>
-                        <p>{project.detailedDescription}</p>
-                      </div>
+                        <p className="text-sm sm:text-base">{project.detailedDescription}</p>
+                      </motion.div>
                       
-                      <div className="flex flex-wrap gap-2 mb-8">
+                      <motion.div 
+                        className="flex flex-wrap gap-2 mb-8"
+                        variants={fadeInUp}
+                        initial="hidden"
+                        animate="visible"
+                        custom={3}
+                      >
                         {project.tags.map((tag, i) => (
                           <span 
                             key={i} 
-                            className="px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm text-white/90 hover:bg-purple-500/30 transition-colors"
+                            className="px-3 py-1 sm:px-4 sm:py-2 bg-white/10 backdrop-blur-sm rounded-full text-xs sm:text-sm text-white/90 hover:bg-purple-500/30 transition-colors"
                           >
                             {tag}
                           </span>
                         ))}
-                      </div>
+                      </motion.div>
                       
-                      <div className="flex space-x-4">
+                      <motion.div 
+                        className="flex flex-wrap gap-4"
+                        variants={fadeInUp}
+                        initial="hidden"
+                        animate="visible"
+                        custom={4}
+                      >
                         {project.githubUrl && (
                           <a
                             href={project.githubUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center space-x-2 px-4 py-2 bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors rounded-lg text-white"
+                            className="flex items-center space-x-1 sm:space-x-2 px-3 py-2 sm:px-4 sm:py-2 bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors rounded-lg text-white"
                             onClick={(e) => e.stopPropagation()}
                           >
-                            <Code className="w-5 h-5" />
-                            <span>View Code</span>
+                            <Code className="w-4 h-4 sm:w-5 sm:h-5" />
+                            <span className="text-sm sm:text-base">View Code</span>
                           </a>
                         )}
                         {project.url && (
@@ -239,23 +286,29 @@ export default function Projects() {
                             href={project.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center space-x-2 px-4 py-2 bg-purple-600/80 hover:bg-purple-600 backdrop-blur-sm transition-colors rounded-lg text-white"
+                            className="flex items-center space-x-1 sm:space-x-2 px-3 py-2 sm:px-4 sm:py-2 bg-purple-600/80 hover:bg-purple-600 backdrop-blur-sm transition-colors rounded-lg text-white"
                             onClick={(e) => e.stopPropagation()}
                           >
-                            <ArrowUpRight className="w-5 h-5" />
-                            <span>Visit Project</span>
+                            <ArrowUpRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                            <span className="text-sm sm:text-base">Visit Project</span>
                           </a>
                         )}
-                      </div>
+                      </motion.div>
                     </div>
                     
-                    <div className="md:w-1/2 rounded-xl overflow-hidden">
+                    <motion.div 
+                      className="md:w-1/2 rounded-xl overflow-hidden h-56 sm:h-64 md:h-full"
+                      variants={scaleUp}
+                      initial="hidden"
+                      animate="visible"
+                      custom={2}
+                    >
                       <img 
                         src={project.image}
                         alt={project.title}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover object-center"
                       />
-                    </div>
+                    </motion.div>
                   </div>
                   
                   <button
@@ -265,9 +318,9 @@ export default function Projects() {
                     }}
                     className="absolute top-4 right-4 p-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors"
                   >
-                    <Minimize2 className="w-6 h-6 text-white" />
+                    <Minimize2 className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                   </button>
-                </div>
+                </motion.div>
               )}
               
               {/* Highlight border on hover - only when not expanded */}
