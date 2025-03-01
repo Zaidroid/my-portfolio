@@ -70,16 +70,6 @@ export default function Projects() {
     }
   }, [inView]);
 
-  // Handle expand/collapse functionality
-  const toggleExpand = (index, e) => {
-    e.stopPropagation();
-    if (expandedProject === index) {
-      setExpandedProject(null);
-    } else {
-      setExpandedProject(index);
-    }
-  };
-
   return (
     <section id="work" className="py-32 px-6 relative">
       <div className="max-w-6xl mx-auto relative z-10">
@@ -104,7 +94,8 @@ export default function Projects() {
                 duration: 0.5,
                 delay: index * 0.1
               }}
-              className={`group relative overflow-hidden rounded-2xl bg-black/5 dark:bg-white/5 shadow-md hover:shadow-xl transition-all duration-500 ${expandedProject === index ? 'md:col-span-2 h-auto' : 'h-[420px]'}`}
+              className={`group relative overflow-hidden rounded-2xl bg-black/5 dark:bg-white/5 shadow-md hover:shadow-xl transition-all duration-500 cursor-pointer ${expandedProject === index ? 'md:col-span-2 h-auto' : 'h-[420px]'}`}
+              onClick={() => expandedProject === index ? setExpandedProject(null) : setExpandedProject(index)}
             >
               <div className="absolute inset-0 overflow-hidden">
                 <div className={`h-full w-full transition-transform duration-700 ${expandedProject === index ? 'opacity-60' : 'group-hover:scale-105'}`}>
@@ -118,20 +109,6 @@ export default function Projects() {
                 {/* Simple title overlay - Always visible, no box or icon */}
                 <div className={`absolute top-0 left-0 p-6 ${expandedProject === index ? 'pointer-events-none' : ''}`}>
                   <h3 className="text-xl font-medium text-white drop-shadow-lg">{project.title}</h3>
-                </div>
-                
-                {/* Expand button - always visible */}
-                <div className="absolute top-4 right-4">
-                  <button
-                    onClick={(e) => toggleExpand(index, e)}
-                    className="p-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors"
-                  >
-                    {expandedProject === index ? (
-                      <Minimize2 className="w-5 h-5 text-white" />
-                    ) : (
-                      <Maximize2 className="w-5 h-5 text-white" />
-                    )}
-                  </button>
                 </div>
                 
                 {/* Bottom section with tags - always visible when not expanded */}
@@ -154,7 +131,7 @@ export default function Projects() {
                     <div className="absolute inset-0 flex flex-col justify-end p-8">
                       <div className="transform translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
                         <div className="flex justify-end mb-3">
-                          {/* Only show action icons here, no title duplication */}
+                          {/* Action icons with stopPropagation to prevent card expansion */}
                           <div className="flex space-x-2">
                             {project.githubUrl && (
                               <a
@@ -251,6 +228,7 @@ export default function Projects() {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center space-x-2 px-4 py-2 bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors rounded-lg text-white"
+                            onClick={(e) => e.stopPropagation()}
                           >
                             <Code className="w-5 h-5" />
                             <span>View Code</span>
@@ -262,6 +240,7 @@ export default function Projects() {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center space-x-2 px-4 py-2 bg-purple-600/80 hover:bg-purple-600 backdrop-blur-sm transition-colors rounded-lg text-white"
+                            onClick={(e) => e.stopPropagation()}
                           >
                             <ArrowUpRight className="w-5 h-5" />
                             <span>Visit Project</span>
@@ -280,7 +259,10 @@ export default function Projects() {
                   </div>
                   
                   <button
-                    onClick={(e) => toggleExpand(index, e)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setExpandedProject(null);
+                    }}
                     className="absolute top-4 right-4 p-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors"
                   >
                     <Minimize2 className="w-6 h-6 text-white" />
