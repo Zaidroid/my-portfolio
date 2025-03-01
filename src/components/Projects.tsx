@@ -62,7 +62,7 @@ export default function Projects() {
   const [isVisible, setIsVisible] = useState(false);
   
   // Track which project is expanded
-  const [expandedProject, setExpandedProject] = useState(null);
+  const [expandedProject, setExpandedProject] = useState<number | null>(null);
   
   useEffect(() => {
     // Once in view, keep visible
@@ -70,6 +70,23 @@ export default function Projects() {
       setIsVisible(true);
     }
   }, [inView]);
+
+  // Handle project expansion with proper event handling
+  const handleProjectClick = (index: number, e: React.MouseEvent) => {
+    e.preventDefault();
+    setExpandedProject(expandedProject === index ? null : index);
+  };
+
+  // Handle close button click with proper event propagation control
+  const handleCloseClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setExpandedProject(null);
+  };
+
+  // Handle external link clicks without triggering expansion
+  const handleLinkClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
 
   return (
     <section id="work" className="py-32 px-6 relative">
@@ -93,11 +110,12 @@ export default function Projects() {
               animate={isVisible ? "visible" : "hidden"}
               variants={fadeInUp}
               custom={index}
-              className={`group relative overflow-hidden rounded-2xl bg-black/5 dark:bg-white/5 shadow-md hover:shadow-xl transition-all duration-500 cursor-pointer ${expandedProject === index ? 'md:col-span-2' : 'h-[420px]'}`}
-              onClick={() => expandedProject === index ? setExpandedProject(null) : setExpandedProject(index)}
-              layout
+              className={`group relative overflow-hidden rounded-2xl bg-black/5 dark:bg-white/5 shadow-md hover:shadow-xl transition-all duration-500 ${expandedProject === index ? 'md:col-span-2' : 'h-[420px]'}`}
+              onClick={(e) => handleProjectClick(index, e)}
+              layoutId={`project-${index}`}
+              layout="position"
               transition={{
-                layout: { duration: 0.6, type: "spring", bounce: 0.2 }
+                layout: { duration: 0.5, type: "spring", damping: 30, stiffness: 200 }
               }}
             >
               <div className="absolute inset-0 overflow-hidden">
@@ -150,7 +168,7 @@ export default function Projects() {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="p-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors z-20"
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={handleLinkClick}
                               >
                                 <Code className="w-5 h-5 text-white" />
                               </a>
@@ -161,7 +179,7 @@ export default function Projects() {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="p-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors z-20"
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={handleLinkClick}
                               >
                                 <ArrowUpRight className="w-5 h-5 text-white" />
                               </a>
@@ -200,7 +218,8 @@ export default function Projects() {
                   className="relative z-10 p-8 bg-gradient-to-b from-black/80 to-black/95 min-h-[420px]"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ duration: 0.3, delay: 0.2 }}
+                  transition={{ duration: 0.3, delay: 0.1 }}
+                  layoutId={`project-content-${index}`}
                 >
                   <div className="flex flex-col md:flex-row gap-8">
                     <div className="md:w-1/2">
@@ -214,7 +233,7 @@ export default function Projects() {
                       </motion.h2>
                       
                       <motion.div 
-                        className="flex flex-wrap items-center text-white/80 space-x-2 space-y-2 mb-6 sm:space-y-0"
+                        className="flex flex-wrap items-center text-white/80 space-x-2 mb-6"
                         variants={fadeInUp}
                         initial="hidden"
                         animate="visible"
@@ -275,7 +294,7 @@ export default function Projects() {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center space-x-1 sm:space-x-2 px-3 py-2 sm:px-4 sm:py-2 bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors rounded-lg text-white"
-                            onClick={(e) => e.stopPropagation()}
+                            onClick={handleLinkClick}
                           >
                             <Code className="w-4 h-4 sm:w-5 sm:h-5" />
                             <span className="text-sm sm:text-base">View Code</span>
@@ -287,7 +306,7 @@ export default function Projects() {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center space-x-1 sm:space-x-2 px-3 py-2 sm:px-4 sm:py-2 bg-purple-600/80 hover:bg-purple-600 backdrop-blur-sm transition-colors rounded-lg text-white"
-                            onClick={(e) => e.stopPropagation()}
+                            onClick={handleLinkClick}
                           >
                             <ArrowUpRight className="w-4 h-4 sm:w-5 sm:h-5" />
                             <span className="text-sm sm:text-base">Visit Project</span>
@@ -312,11 +331,9 @@ export default function Projects() {
                   </div>
                   
                   <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setExpandedProject(null);
-                    }}
+                    onClick={handleCloseClick}
                     className="absolute top-4 right-4 p-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors"
+                    aria-label="Close project details"
                   >
                     <Minimize2 className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                   </button>
