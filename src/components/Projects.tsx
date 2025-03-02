@@ -278,7 +278,7 @@ export default function Projects() {
             
             {/* Content container */}
             <motion.div 
-              className="relative z-10 bg-gradient-to-b from-black/80 to-black/95 rounded-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto"
+              className="relative z-10 bg-gradient-to-b from-black/80 to-black/95 rounded-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto"
               variants={contentVariants}
             >
               {/* Close button - top right */}
@@ -374,14 +374,17 @@ export default function Projects() {
                     </div>
                     
                     <motion.div 
-                      className="md:w-1/2 rounded-xl overflow-hidden h-56 sm:h-64 md:h-auto"
+                      className="md:w-1/2 rounded-xl overflow-hidden"
                       variants={safeScaleUp}
                     >
-                      <img 
-                        src={projects[expandedProject].image}
-                        alt={projects[expandedProject].title}
-                        className="w-full h-full object-cover object-center"
-                      />
+                      {/* Fixed height image container with aspect ratio preservation */}
+                      <div className="w-full h-64 md:h-80">
+                        <img 
+                          src={projects[expandedProject].image}
+                          alt={projects[expandedProject].title}
+                          className="w-full h-full object-cover object-center"
+                        />
+                      </div>
                     </motion.div>
                   </div>
                 </div>
