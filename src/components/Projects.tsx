@@ -1,11 +1,10 @@
-// src/components/Projects.tsx
 import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { ArrowUpRight, Calendar, MapPin, Code, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { fadeInUp, scaleUp } from '../components/animationVariants';
+import { fadeInUp, elasticPop, fadeIn, fadeInRight, scaleUp, stagger } from '../utils/animationVariants';
 
-// Enhanced project data
+// Project data
 const projects = [
   {
     title: "PalTraffic",
@@ -52,24 +51,7 @@ const projects = [
   }
 ];
 
-// Safe animation variants
-const safeScaleUp = {
-  hidden: { 
-    opacity: 0,
-    scale: 0.8
-  },
-  visible: (custom = 0) => ({
-    opacity: 1,
-    scale: 1,
-    transition: {
-      delay: custom * 0.1,
-      duration: 0.5,
-      ease: "easeOut"
-    }
-  })
-};
-
-// Overlay animation variants
+// Modal overlay animation variants
 const overlayVariants = {
   hidden: {
     opacity: 0,
@@ -78,23 +60,7 @@ const overlayVariants = {
     opacity: 1,
     transition: {
       duration: 0.3,
-      ease: "easeOut"
-    }
-  }
-};
-
-const contentVariants = {
-  hidden: {
-    opacity: 0,
-    y: 20
-  },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.4,
-      ease: "easeOut",
-      staggerChildren: 0.1
+      ease: [0.215, 0.61, 0.355, 1], // Consistent easing
     }
   }
 };
@@ -102,115 +68,126 @@ const contentVariants = {
 export default function Projects() {
   const [ref, inView] = useInView({
     triggerOnce: true,
-    threshold: 0.1,
+    threshold: 0.15,
   });
   
-  // Use state to track if projects should be visible
   const [isVisible, setIsVisible] = useState(false);
-  
-  // Track which project is expanded
   const [expandedProject, setExpandedProject] = useState<number | null>(null);
   
   useEffect(() => {
-    // Once in view, keep visible
     if (inView) {
       setIsVisible(true);
     }
   }, [inView]);
 
-  // Handle project card click
   const handleProjectClick = (index: number, e: React.MouseEvent) => {
     e.preventDefault();
     setExpandedProject(index);
-    // Prevent scrolling when overlay is open
     document.body.style.overflow = 'hidden';
   };
 
-  // Handle close button click
   const handleCloseClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     setExpandedProject(null);
-    // Re-enable scrolling when overlay is closed
     document.body.style.overflow = '';
   };
 
-  // Handle external link clicks
   const handleLinkClick = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
 
   return (
-    <section id="work" className="py-32 px-6 relative">
+    <section id="work" className="py-28 md:py-36 px-4 md:px-6 lg:px-8 relative">
+      {/* Subtle gradient blobs for cohesion */}
+      <motion.div
+        className="absolute inset-0 z-0 pointer-events-none"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.1 }}
+        transition={{ duration: 1 }}
+      >
+        <div className="absolute top-10 left-20 w-80 h-80 rounded-full bg-gradient-to-r from-indigo-600/20 to-teal-500/20 blur-[120px]" />
+        <div className="absolute bottom-10 right-20 w-72 h-72 rounded-full bg-gradient-to-r from-teal-500/15 to-cyan-500/15 blur-[120px]" />
+      </motion.div>
+
       <div className="max-w-6xl mx-auto relative z-10">
-        <div className="text-center mb-16">
-          <h2 className="section-heading drop-shadow-md inline-block text-4xl font-bold">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-600 dark:from-blue-400 dark:to-purple-400">
+        <motion.div 
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.215, 0.61, 0.355, 1] }}
+        >
+          <h2 className="section-heading text-3xl md:text-4xl font-bold">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-teal-500 dark:from-cyan-400 dark:to-teal-400">
               Recent Projects
             </span>
           </h2>
-        </div>
+          <p className="mt-4 text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            Explore my recent work showcasing interactive experiences and data-driven applications
+          </p>
+        </motion.div>
         
-        <div 
-          className="grid grid-cols-1 md:grid-cols-2 gap-10"
+        <motion.div 
+          className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10"
           ref={ref}
+          variants={stagger}
+          initial="hidden"
+          animate={isVisible ? "visible" : "hidden"}
         >
           {projects.map((project, index) => (
             <motion.div
               key={index}
-              initial="hidden"
-              animate={isVisible ? "visible" : "hidden"}
               variants={fadeInUp}
               custom={index}
-              className="group relative overflow-hidden rounded-2xl bg-black/5 dark:bg-white/5 shadow-md hover:shadow-xl transition-all duration-300 h-[420px]"
+              whileHover="hover"
+              className="group relative overflow-hidden rounded-2xl bg-white/5 dark:bg-black/5 border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-teal-500/20 dark:hover:shadow-cyan-400/30 transition-all duration-300 h-[420px] cursor-pointer"
               onClick={(e) => handleProjectClick(index, e)}
-              transition={{
-                duration: 0.3,
-                ease: "easeOut"
-              }}
             >
               <div className="absolute inset-0 overflow-hidden">
                 <div className="h-full w-full">
                   <img
                     src={project.image}
                     alt={project.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    width="600"
+                    height="400"
+                    loading="lazy"
                   />
                 </div>
                 
-                {/* Simple title overlay - Always visible */}
-                <motion.div 
-                  className="absolute top-0 left-0 p-6"
-                  variants={fadeInUp}
-                >
+                {/* Title overlay with glass effect */}
+                <div className="absolute top-0 left-0 right-0 p-6 bg-gradient-to-b from-black/70 via-black/40 to-transparent">
                   <h3 className="text-xl font-medium text-white drop-shadow-lg">{project.title}</h3>
-                </motion.div>
+                </div>
                 
-                {/* Bottom section with tags - always visible */}
-                <div className="absolute bottom-0 left-0 right-0 flex flex-wrap gap-2 bg-black/70 backdrop-blur-sm p-4 rounded-t-lg">
-                  {project.tags.map((tag, i) => (
-                    <span 
-                      key={i} 
-                      className="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-sm text-white/90"
-                    >
-                      {tag}
-                    </span>
-                  ))}
+                {/* Bottom section with tags */}
+                <div className="absolute bottom-0 left-0 right-0 backdrop-blur-sm p-4 bg-gradient-to-t from-black/90 to-black/50">
+                  <div className="flex flex-wrap gap-2">
+                    {project.tags.map((tag, i) => (
+                      <span 
+                        key={i} 
+                        className="px-3 py-1 bg-white/10 rounded-full text-sm text-white/90 backdrop-blur-sm"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
                 </div>
                 
                 {/* Hover overlay with more info */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500">
                   <div className="absolute inset-0 flex flex-col justify-end p-8">
-                    <div className="transform translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                      <div className="flex justify-end mb-3">
-                        {/* Action icons with stopPropagation */}
+                    <div className="transform translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500 delay-100">
+                      <div className="flex justify-end mb-4">
+                        {/* Action icons */}
                         <div className="flex space-x-2">
                           {project.githubUrl && (
                             <a
                               href={project.githubUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="p-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors z-20"
+                              className="p-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-teal-500/30 dark:hover:bg-cyan-400/30 transition-colors focus:ring-2 focus:ring-teal-500 focus:outline-none"
                               onClick={handleLinkClick}
+                              aria-label="View source code"
                             >
                               <Code className="w-5 h-5 text-white" />
                             </a>
@@ -220,8 +197,9 @@ export default function Projects() {
                               href={project.url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="p-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors z-20"
+                              className="p-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-teal-500/30 dark:hover:bg-cyan-400/30 transition-colors focus:ring-2 focus:ring-teal-500 focus:outline-none"
                               onClick={handleLinkClick}
+                              aria-label="Visit project website"
                             >
                               <ArrowUpRight className="w-5 h-5 text-white" />
                             </a>
@@ -245,7 +223,7 @@ export default function Projects() {
                         )}
                       </div>
                       
-                      <p className="text-white/90 mb-5">
+                      <p className="text-white/90 line-clamp-4">
                         {project.description}
                       </p>
                     </div>
@@ -254,13 +232,13 @@ export default function Projects() {
               </div>
               
               {/* Highlight border on hover */}
-              <div className="absolute inset-0 rounded-2xl border-2 border-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 border-purple-500/50"></div>
+              <div className="absolute inset-0 rounded-2xl border-2 border-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 border-teal-500/50 dark:border-cyan-400/50"></div>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
       
-      {/* Project Detail Overlay */}
+      {/* Project Detail Overlay with Modal */}
       <AnimatePresence>
         {expandedProject !== null && (
           <motion.div 
@@ -269,41 +247,53 @@ export default function Projects() {
             animate="visible"
             exit="hidden"
             variants={overlayVariants}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="project-modal-title"
           >
-            {/* Backdrop with blur effect */}
+            {/* Backdrop with blur effect and gradient */}
             <div 
-              className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+              className="absolute inset-0 bg-gradient-to-br from-indigo-900/80 to-teal-900/80 dark:from-cyan-900/80 dark:to-teal-900/80 backdrop-blur-md"
               onClick={handleCloseClick}
-            ></div>
-            
-            {/* Content container */}
-            <motion.div 
-              className="relative z-10 bg-gradient-to-b from-black/80 to-black/95 rounded-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto"
-              variants={contentVariants}
             >
-              {/* Close button - top right */}
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 to-teal-500/20 dark:from-cyan-400/20 dark:to-teal-400/20 blur-[100px]"
+                animate={{ scale: [1, 1.1, 1] }}
+                transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+              />
+            </div>
+            
+            {/* Content container with glassmorphism */}
+            <motion.div 
+              className="relative z-10 bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg rounded-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto shadow-2xl border border-teal-500/20 dark:border-cyan-400/20"
+              variants={scaleUp}
+              custom={0}
+              transition={{ ease: [0.215, 0.61, 0.355, 1] }}
+            >
+              {/* Close button - top right with glass effect */}
               <button
                 onClick={handleCloseClick}
-                className="absolute top-4 right-4 p-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors z-20"
+                className="absolute top-4 right-4 p-2 rounded-full bg-white/20 dark:bg-gray-800/20 backdrop-blur-md hover:bg-teal-500/30 dark:hover:bg-cyan-400/30 transition-colors z-20 focus:ring-2 focus:ring-teal-500 focus:outline-none"
                 aria-label="Close project details"
               >
-                <X className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                <X className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700 dark:text-gray-200" />
               </button>
               
               {/* Project content */}
               {expandedProject !== null && (
                 <div className="p-6 md:p-8">
-                  <div className="flex flex-col md:flex-row gap-8">
-                    <div className="md:w-1/2">
+                  <div className="flex flex-col lg:flex-row gap-8">
+                    <div className="lg:w-1/2">
                       <motion.h2 
-                        className="text-3xl font-bold text-white mb-4"
+                        className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-teal-500 dark:from-cyan-400 dark:to-teal-400"
                         variants={fadeInUp}
+                        id="project-modal-title"
                       >
                         {projects[expandedProject].title}
                       </motion.h2>
                       
                       <motion.div 
-                        className="flex flex-wrap items-center text-white/80 space-x-2 mb-6"
+                        className="flex flex-wrap items-center text-gray-600 dark:text-gray-300 space-x-4 mb-6"
                         variants={fadeInUp}
                       >
                         {projects[expandedProject].date && (
@@ -321,21 +311,21 @@ export default function Projects() {
                       </motion.div>
                       
                       <motion.div 
-                        className="text-white/90 mb-6 space-y-4"
-                        variants={fadeInUp}
+                        className="space-y-4 text-gray-700 dark:text-gray-200"
+                        variants={fadeIn}
                       >
-                        <p>{projects[expandedProject].description}</p>
-                        <p className="text-sm sm:text-base">{projects[expandedProject].detailedDescription}</p>
+                        <p className="text-base md:text-lg font-medium">{projects[expandedProject].description}</p>
+                        <p className="text-sm md:text-base">{projects[expandedProject].detailedDescription}</p>
                       </motion.div>
                       
                       <motion.div 
-                        className="flex flex-wrap gap-2 mb-8"
+                        className="flex flex-wrap gap-2 my-6"
                         variants={fadeInUp}
                       >
                         {projects[expandedProject].tags.map((tag, i) => (
                           <span 
                             key={i} 
-                            className="px-3 py-1 sm:px-4 sm:py-2 bg-white/10 backdrop-blur-sm rounded-full text-xs sm:text-sm text-white/90 hover:bg-purple-500/30 transition-colors"
+                            className="px-3 py-1 sm:px-4 sm:py-1.5 bg-white/10 dark:bg-gray-800/20 rounded-full text-xs sm:text-sm text-gray-700 dark:text-gray-200 backdrop-blur-md hover:bg-teal-500/20 dark:hover:bg-cyan-400/20 transition-colors"
                           >
                             {tag}
                           </span>
@@ -343,19 +333,19 @@ export default function Projects() {
                       </motion.div>
                       
                       <motion.div 
-                        className="flex flex-wrap gap-4"
-                        variants={fadeInUp}
+                        className="flex flex-wrap gap-4 mt-8"
+                        variants={fadeInRight}
                       >
                         {projects[expandedProject].githubUrl && (
                           <a
                             href={projects[expandedProject].githubUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center space-x-1 sm:space-x-2 px-3 py-2 sm:px-4 sm:py-2 bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors rounded-lg text-white"
+                            className="flex items-center space-x-2 px-4 py-2 bg-white/20 dark:bg-gray-800/20 backdrop-blur-md hover:bg-teal-500/30 dark:hover:bg-cyan-400/30 rounded-lg text-gray-700 dark:text-white transition-colors focus:ring-2 focus:ring-teal-500 focus:outline-none"
                             onClick={handleLinkClick}
                           >
-                            <Code className="w-4 h-4 sm:w-5 sm:h-5" />
-                            <span className="text-sm sm:text-base">View Code</span>
+                            <Code className="w-5 h-5" />
+                            <span>View Code</span>
                           </a>
                         )}
                         {projects[expandedProject].url && (
@@ -363,26 +353,35 @@ export default function Projects() {
                             href={projects[expandedProject].url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center space-x-1 sm:space-x-2 px-3 py-2 sm:px-4 sm:py-2 bg-purple-600/80 hover:bg-purple-600 backdrop-blur-sm transition-colors rounded-lg text-white"
+                            className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-teal-500 dark:from-cyan-400 dark:to-teal-400 hover:bg-gradient-to-r hover:from-teal-500 hover:to-cyan-500 dark:hover:from-teal-400 dark:hover:to-cyan-400 rounded-lg text-white transition-all duration-300 focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 focus:outline-none relative overflow-hidden group"
                             onClick={handleLinkClick}
                           >
-                            <ArrowUpRight className="w-4 h-4 sm:w-5 sm:h-5" />
-                            <span className="text-sm sm:text-base">Visit Project</span>
+                            <span className="relative z-10">Visit Project</span>
+                            <motion.span
+                              className="absolute inset-0 bg-gradient-to-r from-teal-500 to-cyan-500 dark:from-teal-400 dark:to-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                              initial={{ x: '100%' }}
+                              whileHover={{ x: '0%' }}
+                              transition={{ duration: 0.4, ease: [0.215, 0.61, 0.355, 1] }}
+                            />
+                            <ArrowUpRight className="w-5 h-5 relative z-10" />
                           </a>
                         )}
                       </motion.div>
                     </div>
                     
                     <motion.div 
-                      className="md:w-1/2 rounded-xl overflow-hidden"
-                      variants={safeScaleUp}
+                      className="lg:w-1/2 rounded-xl overflow-hidden border border-teal-500/20 dark:border-cyan-400/20 shadow-md"
+                      variants={scaleUp}
+                      custom={1}
+                      transition={{ ease: [0.215, 0.61, 0.355, 1] }}
                     >
-                      {/* Fixed height image container with aspect ratio preservation */}
-                      <div className="w-full h-64 md:h-80">
+                      <div className="w-full h-64 md:h-80 overflow-hidden group">
                         <img 
                           src={projects[expandedProject].image}
                           alt={projects[expandedProject].title}
-                          className="w-full h-full object-cover object-center"
+                          className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+                          width="800"
+                          height="600"
                         />
                       </div>
                     </motion.div>
