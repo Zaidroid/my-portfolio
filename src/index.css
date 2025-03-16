@@ -35,6 +35,7 @@
 }
 
 @layer components {
+  /* Navigation styling for both desktop and mobile */
   .nav-link {
     @apply text-[rgb(var(--foreground))] relative after:absolute after:bottom-0 after:left-0 after:bg-[rgb(var(--primary))] after:h-0.5 after:w-0 hover:after:w-full after:transition-all after:duration-300 text-sm tracking-wide;
   }
@@ -43,6 +44,7 @@
     @apply fixed inset-0 bg-[rgb(var(--background))] z-50 flex items-center justify-center backdrop-blur-lg;
   }
 
+  /* Typography for section headings */
   .section-heading {
     @apply text-[2.5rem] md:text-[3.5rem] font-normal leading-tight tracking-tight text-[rgb(var(--foreground))];
   }
@@ -51,6 +53,7 @@
     @apply text-lg md:text-xl text-[rgb(var(--muted))] leading-relaxed max-w-2xl;
   }
 
+  /* Project card styling */
   .project-card {
     @apply relative overflow-hidden rounded-2xl;
   }
@@ -59,26 +62,63 @@
     @apply absolute inset-0 flex flex-col justify-end p-6 bg-gradient-to-t from-black/80 to-transparent opacity-0 transition-all duration-500 ease-in-out group-hover:opacity-100;
   }
 
+  /* Footer link styling */
   .footer-link {
     @apply text-[rgb(var(--muted))] hover:text-[rgb(var(--foreground))] transition-colors duration-300;
+  }
+  
+  /* Button styling for consistent appearance */
+  .primary-button {
+    @apply inline-flex items-center gap-2 px-6 py-3 md:px-8 md:py-4 bg-gradient-to-r from-purple-600 to-blue-600 dark:from-blue-500 dark:to-purple-500 text-white rounded-full font-medium shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden relative;
+  }
+  
+  /* Gradient text for headings that need emphasis */
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-600 dark:from-blue-400 dark:to-purple-400;
   }
 }
 
 @layer utilities {
+  /* Utility for balanced text */
   .text-balance {
     text-wrap: balance;
   }
   
+  /* Animation utilities */
   .animate-pulse-slow {
     animation: pulse 6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
   
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  /* Gradient overlay for hover effects */
+  .gradient-overlay {
+    @apply absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-purple-500 dark:to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500;
+  }
+  
+  /* Background blur for glass effect components */
+  .glass-effect {
+    @apply bg-[rgb(var(--background))]/90 backdrop-blur-lg;
+  }
+  
+  /* Animations for moving elements */
   @keyframes pulse {
     0%, 100% {
       opacity: 0.1;
     }
     50% {
       opacity: 0.3;
+    }
+  }
+  
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
     }
   }
 }
