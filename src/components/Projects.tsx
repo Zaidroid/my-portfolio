@@ -11,7 +11,7 @@ const projects = [
     description: "Real-time traffic monitoring and navigation system for Palestine regions with live updates and route optimization.",
     detailedDescription: "PalTraffic provides comprehensive real-time traffic data across Palestine, including route optimization, incident reporting, and alternative path suggestions. The system integrates with various data sources to offer the most accurate traffic conditions, helping users navigate efficiently while avoiding congestion and roadblocks. Users can contribute to traffic updates through a community-driven reporting system, making it a collaborative tool for better mobility.",
     image: "https://images.unsplash.com/photo-1612966808160-87a819e0af82?q=80&w=2487&auto=format&fit=crop",
-    url: "https://roads.zaidlab.xyz",
+    url: "https://traffic.zaidlab.xyz",
     tags: ["React", "Node.js", "Maps API"],
     date: "2024",
     location: "Palestine",
